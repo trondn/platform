@@ -31,7 +31,7 @@
 extern "C" {
 #endif
 
-#ifdef WIN32
+#if defined(WIN32) && !defined(__GNUC__)
     typedef DWORD cb_thread_t;
     typedef CRITICAL_SECTION cb_mutex_t;
     typedef CONDITION_VARIABLE cb_cond_t;
