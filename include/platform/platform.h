@@ -232,7 +232,7 @@ extern "C" {
     PLATFORM_PUBLIC_API
     void cb_dlclose(cb_dlhandle_t handle);
 
-#ifdef _MSC_VER
+#ifdef WIN32
     struct iovec {
         size_t iov_len;
         void *iov_base;
