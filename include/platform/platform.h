@@ -15,7 +15,7 @@
  *   limitations under the License.
  */
 #pragma once
-#ifdef WIN32
+#ifdef _MSC_VER
 #include <windows.h>
 #else
 #include <pthread.h>
@@ -31,7 +31,7 @@
 extern "C" {
 #endif
 
-#if defined(WIN32) && !defined(__GNUC__)
+#ifdef _MSC_VER
     typedef DWORD cb_thread_t;
     typedef CRITICAL_SECTION cb_mutex_t;
     typedef CONDITION_VARIABLE cb_cond_t;
@@ -232,7 +232,7 @@ extern "C" {
     PLATFORM_PUBLIC_API
     void cb_dlclose(cb_dlhandle_t handle);
 
-#ifdef WIN32
+#ifdef _MSC_VER
     struct iovec {
         size_t iov_len;
         void *iov_base;
