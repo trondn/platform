@@ -136,6 +136,13 @@ public:
     }
 
     /**
+     * Get the available write buffer
+     */
+    cb::const_byte_buffer wdata() const {
+        return getAvailableWriteSpace();
+    }
+
+    /**
      * Try to produce a number of bytes by providing a callback function
      * which will receive the buffer where the data may be inserted
      *
@@ -158,6 +165,11 @@ public:
     ssize_t produce(std::function<ssize_t(cb::byte_buffer)> producer);
 
     /**
+     * A number of bytes was made available for the consumer
+     */
+    void produced(size_t nbytes);
+
+    /**
      * Try to consume data from the buffer by providing a callback function
      *
      * @param producer a callback function to consume data from the provided
@@ -177,6 +189,15 @@ public:
      * @return the number of bytes consumed
      */
     ssize_t consume(std::function<ssize_t(cb::const_byte_buffer)> consumer);
+
+    /**
+     * The number of bytes just removed from the consumer end of the buffer.
+     *
+     * If the consumer catch up with the producer all pointers returned
+     * could be invalidated (most likely reset to the beginning of the
+     * buffer)
+     */
+    void consumed(size_t nbytes);
 
     /**
      * Pack this buffer
@@ -259,11 +280,6 @@ protected:
     }
 
     /**
-     * A number of bytes was made available for the consumer
-     */
-    void produced(size_t nbytes);
-
-    /**
      * Get information of the available data the consumer may read.
      * This is a contiguous space the caller may
      * use, and call consumed() later on to mark the space as free and
@@ -272,15 +288,6 @@ protected:
     cb::const_byte_buffer getAvailableReadSpace() const {
         return {buffer.data() + read_head, write_head - read_head};
     }
-
-    /**
-     * The number of bytes just removed from the consumer end of the buffer.
-     *
-     * If the consumer catch up with the producer all pointers returned
-     * could be invalidated (most likely reset to the beginning of the
-     * buffer)
-     */
-    void consumed(size_t nbytes);
 
     /*
      * Some helper functions while running under Valgrind to help us
